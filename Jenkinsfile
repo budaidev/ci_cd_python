@@ -23,14 +23,17 @@ pipeline {
         stage('Setup Poetry') {
             steps {
                 sh '''
-                    # Create directories with correct permissions
+                    # Install curl
+                    apt-get update && apt-get install -y curl
+
+                    # Create directories
                     mkdir -p $PIP_CACHE_DIR
                     mkdir -p $POETRY_HOME
 
-                    # Install pip and poetry with sudo
-                    python -m pip install --cache-dir=$PIP_CACHE_DIR pip --upgrade --force-reinstall
-                    curl -sSL https://install.python-poetry.org | python -
-                    poetry config virtualenvs.create false
+                    # Install pip and poetry
+                    python -m pip install --no-cache-dir pip --upgrade --force-reinstall
+                    curl -sSL https://install.python-poetry.org | POETRY_HOME=${POETRY_HOME} python -
+                    $POETRY_HOME/bin/poetry config virtualenvs.create false
                 '''
             }
         }
