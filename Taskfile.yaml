@@ -1,0 +1,60 @@
+version: '3'
+
+vars:
+  PYTHON: python
+  PYTEST: pytest
+  FLAKE8: flake8
+  MYPY: mypy
+
+tasks:
+  clean:
+    desc: Clean up build artifacts
+    cmds:
+      - powershell -Command "if (Test-Path build) { Remove-Item -Recurse -Force build }; exit 0"
+      - powershell -Command "if (Test-Path dist) { Remove-Item -Recurse -Force dist }; exit 0"
+      - powershell -Command "Remove-Item -Recurse -Force -ErrorAction SilentlyContinue *.egg-info, .pytest_cache, .coverage, htmlcov, .mypy_cache; exit 0"
+
+  install:
+    desc: Install package in development mode
+    cmds:
+      - pip install -e .
+      - pip install -r requirements.txt
+
+  lint:
+    desc: Run code linting
+    cmds:
+      - "{{.FLAKE8}} src/character_counter"
+      - "{{.MYPY}} src/character_counter"
+
+  test:
+    desc: Run tests with pytest
+    cmds:
+      - "{{.PYTEST}} tests/ -v --cov=src/character_counter"
+
+  build:
+    desc: Build Python package
+    deps: [clean]
+    cmds:
+      # Build only wheel
+      - poetry build --format wheel
+      # Or build only sdist
+      # - poetry build --format sdist
+
+  build-docker:
+    desc: Build Docker image
+    cmds:
+      - docker build -t character-counter .
+
+  docker-run:
+    desc: Run Docker container
+    cmds:
+      - powershell -Command "docker run -v ${PWD}/tests/test_files:/data character-counter /data/sample.txt"
+
+  ci:
+    desc: Run full CI pipeline locally
+    cmds:
+      - task: lint
+      - task: test
+      - task: build
+      - task: build-docker
+      - task: docker-run

@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "character-counter"
+version = "0.1.0"
+description = "A simple character counter for text files"
+authors = ["Attila Budai"]
+license = "MIT"
+packages = [{include = "character_counter", from = "src"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+typed-ast = "1.5.5"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2"
+flake8 = "^3.9"
+mypy = "^1.0.0"
+isort = "^5.7"
+black = "^20.8b1"
+
+[tool.poetry.scripts]
+charcount = "character_counter.counter:main"
