@@ -14,6 +14,9 @@ pipeline {
         POETRY_VERSION = "1.5.1"
         PATH = "$POETRY_HOME/bin:$PATH"
         PIP_CACHE_DIR = "${WORKSPACE}/.pip"
+        // Add these environment variables for pip
+        PIP_USER = "false"
+        PYTHONUSERBASE = "${WORKSPACE}/.local"
     }
 
     stages {
@@ -23,15 +26,17 @@ pipeline {
                     # Create directories with correct permissions
                     mkdir -p $PIP_CACHE_DIR
                     mkdir -p $POETRY_HOME
+                    mkdir -p $PYTHONUSERBASE
 
                     # Install pip and poetry with correct permissions
-                    python -m pip install --cache-dir=$PIP_CACHE_DIR --user --upgrade pip
+                    python -m pip install --cache-dir=$PIP_CACHE_DIR --prefix=$PYTHONUSERBASE --upgrade pip
                     curl -sSL https://install.python-poetry.org | POETRY_HOME=${POETRY_HOME} POETRY_VERSION=${POETRY_VERSION} python -
                     $POETRY_HOME/bin/poetry config virtualenvs.create false
                 '''
             }
         }
 
+        // Rest of the stages remain the same
         stage('Install Dependencies') {
             steps {
                 sh '$POETRY_HOME/bin/poetry install --no-interaction --no-ansi'
