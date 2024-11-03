@@ -26,12 +26,11 @@ pipeline {
                     # Create directories with correct permissions
                     mkdir -p $PIP_CACHE_DIR
                     mkdir -p $POETRY_HOME
-                    mkdir -p $PYTHONUSERBASE
 
-                    # Install pip and poetry with correct permissions
-                    python -m pip install --cache-dir=$PIP_CACHE_DIR --prefix=$PYTHONUSERBASE --upgrade pip
-                    curl -sSL https://install.python-poetry.org | POETRY_HOME=${POETRY_HOME} POETRY_VERSION=${POETRY_VERSION} python -
-                    $POETRY_HOME/bin/poetry config virtualenvs.create false
+                    # Install pip and poetry with sudo
+                    python -m pip install --cache-dir=$PIP_CACHE_DIR pip --upgrade --force-reinstall
+                    curl -sSL https://install.python-poetry.org | python -
+                    poetry config virtualenvs.create false
                 '''
             }
         }
