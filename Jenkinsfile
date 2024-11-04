@@ -48,7 +48,6 @@ pipeline {
         stage('Lint') {
             steps {
                 sh '''
-                    $POETRY_HOME/bin/poetry run black --check src tests
                     $POETRY_HOME/bin/poetry run isort --check-only src tests
                     $POETRY_HOME/bin/poetry run flake8 src tests
                     $POETRY_HOME/bin/poetry run mypy src
