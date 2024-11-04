@@ -57,7 +57,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh '$POETRY_HOME/bin/poetry run pytest'
+                sh '$POETRY_HOME/bin/poetry run pytest --junitxml=test-results.xml'
             }
             post {
                 always {
