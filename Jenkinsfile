@@ -57,12 +57,11 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh '$POETRY_HOME/bin/poetry run pytest --junitxml=test-results.xml'
+                sh '$POETRY_HOME/bin/poetry run pytest --junitxml=test-results.xml --cov=src --cov-report=xml'
             }
             post {
                 always {
                     junit 'test-results.xml'
-                    publishCoverage adapters: [coberturaAdapter('coverage.xml')]
                 }
             }
         }
