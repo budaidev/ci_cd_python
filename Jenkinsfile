@@ -20,12 +20,6 @@ pipeline {
     }
 
     stages {
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()
-            }
-        }
-
         stage('Setup Poetry') {
             steps {
                 sh '''
