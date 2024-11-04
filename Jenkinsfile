@@ -62,7 +62,7 @@ pipeline {
             post {
                 always {
                     junit 'test-results.xml'
-                    cobertura coberturaReportFile: 'coverage.xml'
+                    publishCoverage adapters: [coberturaAdapter('coverage.xml')]
                 }
             }
         }
